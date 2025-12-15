@@ -1,0 +1,30 @@
+name: PKI Lab Execution
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: "Domain name for the certificate"
+        required: true
+        default: "localhost"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run PKI Lab
+        run: |
+          chmod +x scripts/run_lab.sh
+          ./scripts/run_lab.sh "${{ inputs.domain }}"
+
+      - name: Upload certificates as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pki-output
+          path: |
+            myCA/
+            server/
